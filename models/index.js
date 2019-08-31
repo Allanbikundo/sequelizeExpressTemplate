@@ -1,15 +1,19 @@
 'use strict';
 
-var fs        = require('fs');
-var path      = require('path');
-var Sequelize = require('sequelize');
-var basename  = path.basename(__filename);
-var db        = {};
+const fs        = require('fs');
+const path      = require('path');
+const Sequelize = require('sequelize');
 
 
-var sequelize = new Sequelize('test','root','',{
-    host: "146.148.32.233",
-    dialect: "mysql"
+const basename  = path.basename(__filename);
+const db        = {};
+
+
+console.log(process.env.DIALECT)
+
+var sequelize = new Sequelize(process.env.DBNAME,process.env.DBUSERNAME,process.env.DBPASSWORD,{
+    host: process.env.HOST,
+    dialect: process.env.DIALECT
 })
 
 fs
@@ -27,6 +31,9 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

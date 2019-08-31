@@ -1,0 +1,15 @@
+NODE_ENV=
+PORT=
+
+
+# Database details
+DBNAME=
+DBUSERNAME=
+DBPASSWORD=
+HOST=
+DIALECT=
+
+# Email service details
+EMAIL_SERVICE = 
+EMAIL_USERNAME = 
+EMAIL_PASSWORD = 
