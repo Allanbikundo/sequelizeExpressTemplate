@@ -1,4 +1,14 @@
-https://scotch.io/tutorials/nodejs-cron-jobs-by-examples
+# Introduction
+# Running it
+NPM install
+Rename the EXAMPLE file to .env and fill in the respective fields
+
+to create the vapid key 
+run app.js once and console.log bboth vapid keys
+In the config folder rename exampleConfig.json to config.json and edit the file with the needed variables
+
+## Useful links and notes
+["Cron Jobs"]https://scotch.io/tutorials/nodejs-cron-jobs-by-examples
 
 * * * * * *
 | | | | | |

@@ -8,12 +8,14 @@ const axios = require("axios")
 const webpush = require('web-push');
 const bodyParser = require('body-parser')
 const path = require('path')
+const apiArthur = require("./requests/arthur");
 const port = process.env.PORT
 var db = require("./models");
 var passport = require('passport');
 var Strategy = require('passport-http-bearer').Strategy;
 
 
+apiArthur(app,db)
 
 passport.use(new Strategy(
   function (token, cb) {
@@ -29,7 +31,7 @@ app.use(bodyParser.json());
 app.use(require('morgan')('combined'));
 
 db.sequelize.sync().then(() => {
-  db.article.bulkCreate(
+  db.Article.bulkCreate(
     times(10, () => ({
       title: faker.lorem.words(10),
     }))
@@ -50,7 +52,7 @@ cron.schedule("*/5 * * * *", function () {
   axios.get("http://api.icndb.com/jokes/random").then(function (response) {
     let mailOptions = {
       from: process.env.EMAIL_USERNAME,
-      to: "enyaboke131@gmail.com",
+      to: "test@test.com",
       subject: `CRON JOB TEST MAIL`,
       text: response.data.value.joke
     };
@@ -67,19 +69,20 @@ cron.schedule("*/5 * * * *", function () {
   })
 });
 
-// app.get('/',
-//   passport.authenticate('bearer', { session: false }),
-//   function (req, res) {
-//     res.json({ username: req.user.username, email: req.user.emails[0].value });
-//   }
-// );
+app.get('/auth',
+  passport.authenticate('bearer', { session: false }),
+  function (req, res) {
+    res.json({ username: req.user.username, email: req.user.emails[0].value });
+  }
+);
 
 // push notificatins
 
 app.use(express.static(path.join(__dirname, "client")))
 // generete Keys
 // const vapidKeys = webpush.generateVAPIDKeys();
-
+// console.log(vapidKeys.privateKey)
+// console.log(vapidKeys.publicKey)
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY
 const privatePublicKey = process.env.PRIVATE_VAPID_KEY
 
