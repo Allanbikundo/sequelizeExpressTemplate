@@ -17,7 +17,7 @@
 ## Useful links and notes
 [cron jobs examples]https://scotch.io/tutorials/nodejs-cron-jobs-by-examples
 
-* * * * * * \n
+* * * * * *
 | | | | | |
 | | | | | day of week
 | | | | month
