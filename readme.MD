@@ -17,14 +17,14 @@
 ## Useful links and notes
 [cron jobs examples]https://scotch.io/tutorials/nodejs-cron-jobs-by-examples
 
-⋅⋅⋅* * * * * *
-⋅⋅⋅| | | | | |
-⋅⋅⋅| | | | | day of week
-⋅⋅⋅| | | | month
-⋅⋅⋅| | | day of month
-⋅⋅⋅| | hour
-⋅⋅⋅| minute
-⋅⋅⋅second ( optional )
+1⋅ * * * * * * \n
+2⋅ | | | | | |
+3⋅ | | | | | day of week
+4⋅ | | | | month
+5⋅ | | | day of month
+6⋅ | | hour
+7⋅ | minute
+8⋅ second ( optional )
 
 node-cron run job every 3 hours
 You should zero-out the second and minute values, and use a step of /3. The cron expression for this is
@@ -32,3 +32,4 @@ You should zero-out the second and minute values, and use a step of /3. The cron
 0 0 */3 * * *
 
 Which evaluates to 'At 0 seconds, 0 minutes every 3rd hour'.
+[EOF]
