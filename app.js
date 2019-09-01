@@ -4,7 +4,10 @@ const times = require("lodash.times");
 const faker = require("faker");
 const cron = require("node-cron");
 const nodemailer = require("nodemailer")
-
+const axios = require("axios")
+const webpush = require('web-push');
+const bodyParser = require('body-parser')
+const path = require('path')
 const port = process.env.PORT
 var db = require("./models");
 var passport = require('passport');
@@ -20,6 +23,8 @@ passport.use(new Strategy(
       return cb(null, user);
     });
   }));
+
+app.use(bodyParser.json());
 
 app.use(require('morgan')('combined'));
 
@@ -39,31 +44,61 @@ let transporter = nodemailer.createTransport({
   }
 });
 
-cron.schedule("* * * * *", function(){
+cron.schedule("*/5 * * * *", function () {
   console.log("---------------------");
   console.log("Running Cron Job");
-  let mailOptions = {
-    from: process.env.EMAIL_USERNAME,
-    to: "allanbmageto@gmail.com",
-    subject: `CRON JOB TEST MAIL`,
-    text: faker.internet.url()
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      throw error;
-    } else {
-      console.log("Email successfully sent!");
-    }
-  });
+  axios.get("http://api.icndb.com/jokes/random").then(function (response) {
+    let mailOptions = {
+      from: process.env.EMAIL_USERNAME,
+      to: "enyaboke131@gmail.com",
+      subject: `CRON JOB TEST MAIL`,
+      text: response.data.value.joke
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        throw error;
+      } else {
+        console.log("Email successfully sent!");
+      }
+    });
+  }).catch(function (error) {
+    // handle error
+    console.log(error);
+  })
 });
 
+// app.get('/',
+//   passport.authenticate('bearer', { session: false }),
+//   function (req, res) {
+//     res.json({ username: req.user.username, email: req.user.emails[0].value });
+//   }
+// );
 
-console.log(faker.internet.exampleEmail(), ",", faker.name.firstName(), ",", faker.lorem.words(20), ",", faker.finance.amount(), ",", faker.lorem.words(5))
+// push notificatins
 
-app.get('/',
-  passport.authenticate('bearer', { session: false }),
-  function (req, res) {
-    res.json({ username: req.user.username, email: req.user.emails[0].value });
-  });
+app.use(express.static(path.join(__dirname, "client")))
+// generete Keys
+// const vapidKeys = webpush.generateVAPIDKeys();
+
+const publicVapidKey = process.env.PUBLIC_VAPID_KEY
+const privatePublicKey = process.env.PRIVATE_VAPID_KEY
+
+webpush.setVapidDetails(
+  'mailto:test@test.org',
+  publicVapidKey,
+  privatePublicKey
+  );
+
+// Subscribe route
+app.post('/subscribe', (req, res) => {
+  const subscription = req.body
+
+  res.status(201).json({});
+
+  const payload = JSON.stringify({ title: "push Test" })
+
+  webpush.sendNotification(subscription, payload).catch(err => console.error(err))
+})
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
